@@ -64,46 +64,46 @@ jobs:
           GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
           GITOPS_REPO: ${{ secrets.GITOPS_REPO }}
         run: |
-        # Get the new image tag with SHA
-        IMAGE_TAG="main-${{ steps.vars.outputs.sha_short }}"
+          # Get the new image tag with SHA
+          IMAGE_TAG="main-${{ steps.vars.outputs.sha_short }}"
     
-        echo "=== Updating GitOps repo ==="
-        echo "Image tag: ${IMAGE_TAG}"
+          echo "=== Updating GitOps repo ==="
+          echo "Image tag: ${IMAGE_TAG}"
     
-        # Clone GitOps repo
-        git clone https://x-access-token:${GITOPS_TOKEN}@github.com/${GITOPS_REPO} gitops
-        cd gitops
+          # Clone GitOps repo
+          git clone https://x-access-token:${GITOPS_TOKEN}@github.com/${GITOPS_REPO} gitops
+          cd gitops
     
-        # Show current deployment file
-        echo "=== Current deployment.yml ==="
-        cat apps/my-website/deployment.yml | grep "image:"
+          # Show current deployment file
+          echo "=== Current deployment.yml ==="
+          cat apps/my-website/deployment.yml | grep "image:"
     
-        # Update image tag in deployment
-        sed -i "s|image: ghcr.io/${{ github.repository }}:.*|image: ghcr.io/${{ github.repository }}:${IMAGE_TAG}|g" \
-        apps/my-website/deployment.yml
+          # Update image tag in deployment
+          sed -i "s|image: ghcr.io/${{ github.repository }}:.*|image: ghcr.io/${{ github.repository }}:${IMAGE_TAG}|g" \
+          apps/my-website/deployment.yml
     
-        # Show updated file
-        echo "=== Updated deployment.yml ==="
-        cat apps/my-website/deployment.yml | grep "image:"
+          # Show updated file
+          echo "=== Updated deployment.yml ==="
+          cat apps/my-website/deployment.yml | grep "image:"
     
-        # Check if there are changes
-        if git diff --quiet apps/my-website/deployment.yml; then
-          echo "⚠️  No changes detected in deployment.yml"
-          echo "This might mean:"
-          echo "  1. The image tag is already up to date"
-          echo "  2. The sed command didn't match anything"
-          exit 0
-        fi
+          # Check if there are changes
+          if git diff --quiet apps/my-website/deployment.yml; then
+            echo "⚠️  No changes detected in deployment.yml"
+            echo "This might mean:"
+            echo "  1. The image tag is already up to date"
+            echo "  2. The sed command didn't match anything"
+            exit 0
+          fi
     
-        # Show the diff
-        echo "=== Changes ==="
-        git diff apps/my-website/deployment.yml
+          # Show the diff
+          echo "=== Changes ==="
+          git diff apps/my-website/deployment.yml
     
-        # Commit and push
-        git config user.name "GitHub Actions Bot"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add apps/my-website/deployment.yml
-        git commit -m "🚀 Deploy my-website to ${IMAGE_TAG}"
-        git push
+          # Commit and push
+          git config user.name "GitHub Actions Bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add apps/my-website/deployment.yml
+          git commit -m "🚀 Deploy my-website to ${IMAGE_TAG}"
+           push
     
-        echo "✅ GitOps repo updated successfully"
+          echo "✅ GitOps repo updated successfully"
